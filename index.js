@@ -27,6 +27,7 @@ const fetcher = (target, file) => {
         } else process.exit();
       }
     });
+
   });
 };
 
