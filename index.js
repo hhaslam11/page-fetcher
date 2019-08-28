@@ -3,6 +3,7 @@ const stdin = process.stdin;
 stdin.setRawMode(true);
 stdin.setEncoding('utf8');
 
+const readlineSync = require('readline-sync');
 const request = require('request');
 const fs = require('fs');
 
@@ -15,9 +16,18 @@ const fetcher = (target, file) => {
 
   request(target, (error, response, body) => {
     verifyDownloadedFile(error);
-    saveToFile(body, file);
-  });
 
+    //check if file exists
+    fs.readFile(file, e => {
+      if (e) {
+        saveToFile(body, file);
+      } else {
+        if (getYesOrNo('This file already exists. Do you want to overwrite it?')) {
+          saveToFile(body, file);
+        } else process.exit();
+      }
+    });
+  });
 };
 
 const verifyDownloadedFile = e => {
@@ -43,5 +53,12 @@ const saveToFile = (content, fileName) => {
 
 const trimError = e => String(e).split('\n')[0];
 
-fetcher(args[2], args[3]);
+const getYesOrNo = question => {
+  let x;
+  while (x !== false && x !== true) {
+    x = readlineSync.keyInYN(question);
+  }
+  return x;
+};
 
+fetcher(args[2], args[3]);
