@@ -15,6 +15,12 @@ const fetcher = (target, file) => {
   }
 
   request(target, (error, response, body) => {
+    
+    //TODO maybe make this a seperate function
+    if (response.statusCode !== 200) {
+      console.log('Error: ' + response.statusCode);
+      process.exit();
+    }
     verifyDownloadedFile(error);
 
     //check if file exists
